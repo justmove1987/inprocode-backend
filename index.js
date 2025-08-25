@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
   res.send('API funcionant ✅');
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor escoltant a http://localhost:${PORT}`);
-});
+  console.log(`Servidor escoltant al port ${PORT}`)
+})
