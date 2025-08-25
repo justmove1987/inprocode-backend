@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: inprocode-backend
+    env: node
+    plan: free
+    region: frankfurt
+    buildCommand: "npm install"
+    startCommand: "node index.js"
+    envVars:
+      - key: MONGO_URI
+        value: mongodb+srv://enricabadrovira:fKBOmXPD7wUsbmxu@cluster0.fn76wlg.mongodb.net/inprocode?retryWrites=true&w=majority&appName=Cluster0
