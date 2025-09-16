@@ -1,25 +1,20 @@
 import express from 'express'
 import Event from '../models/Event.js'
+import { getEvents, createEvent } from '../controllers/eventsController.js'
 
 const router = express.Router()
 
-// GET - Tots els esdeveniments
 router.get('/', async (req, res) => {
   const events = await Event.find()
   res.json(events)
 })
 
-// POST - Crear un nou esdeveniment
 router.post('/', async (req, res) => {
-  const event = new Event(req.body)
-  await event.save()
-  res.status(201).json(event)
-})
-
-// DELETE - Eliminar un esdeveniment per ID
-router.delete('/:id', async (req, res) => {
-  await Event.findByIdAndDelete(req.params.id)
-  res.status(204).end()
+  const { id, title, start, end, backgroundColor } = req.body
+  const newEvent = new Event({ id, title, start, end, backgroundColor })
+  await newEvent.save()
+  res.status(201).json(newEvent)
 })
 
 export default router
+  
