@@ -2,7 +2,33 @@ import User from '../models/User.js'
 import Location from '../models/Location.js'
 import fetch from 'node-fetch' // si fas servir Node >=18 ja està inclòs
 
-export const registerUser = async (req, res) => {
+
+export const getUsers = async (req, res) => {
+  try {
+    const users = await User.find() // .limit(10) per limitar
+    res.status(200).json(users)
+  } catch (error) {
+    console.error('❌ Error obtenint usuaris:', error)
+    res.status(500).json({ message: 'Error al obtenir els usuaris' })
+  }
+}   
+
+export const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params
+    const updated = await User.findByIdAndUpdate(id, req.body, { new: true })
+
+    if (!updated) return res.status(404).json({ message: 'Usuari no trobat' })
+
+    res.status(200).json(updated)
+  } catch (error) {
+    console.error('❌ Error actualitzant usuari:', error)
+    res.status(500).json({ message: 'Error al actualitzar l’usuari' })
+  }
+}
+
+
+export const createUser = async (req, res) => {
   console.log('📩 Rebut:', req.body)
 
   try {
@@ -56,5 +82,24 @@ export const registerUser = async (req, res) => {
   } catch (error) {
     console.error('❌ Error al crear usuari:', error)
     res.status(500).json({ message: 'Error del servidor' })
+  }
+}
+
+
+export const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params
+
+    // Esborra usuari
+    const deletedUser = await User.findByIdAndDelete(id)
+    if (!deletedUser) return res.status(404).json({ message: 'Usuari no trobat' })
+
+    // També elimina la seva ubicació associada
+    await Location.deleteOne({ userId: id })
+
+    res.status(200).json({ message: 'Usuari i ubicació eliminats correctament' })
+  } catch (error) {
+    console.error('❌ Error eliminant usuari:', error.message)
+    res.status(500).json({ message: 'Error intern del servidor' })
   }
 }
