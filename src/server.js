@@ -1,10 +1,12 @@
-// src/server.js
 import express from 'express'
 import cors from 'cors'
+import dotenv from 'dotenv'
 import userRoutes from '../routes/userRoutes.js'
 import locationRoutes from '../routes/locationRoutes.js'
 import eventsRoutes from '../routes/events.js'
 import pluginRoutes from '../routes/pluginRoutes.js'
+
+dotenv.config()
 
 const app = express()
 
@@ -14,7 +16,13 @@ const allowedOrigins = [
 ]
 
 app.use(cors({
-  origin: allowedOrigins,
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error('CORS no permès per aquest origen'))
+    }
+  },
   credentials: true
 }))
 
