@@ -1,25 +1,27 @@
 import User from '../models/User.js'
+import Location from '../models/Location.js'
 
-export const getUsers = async (req, res) => {
-  const users = await User.find()
-  res.json(users)
+export const registerUser = async (req, res) => {
+  try {
+    const { name, email, location } = req.body
+
+    const newUser = new User({ name, email })
+    const savedUser = await newUser.save()
+
+    if (location?.lat && location?.lng) {
+      const newLocation = new Location({
+        userId: savedUser._id,
+        name: savedUser.name,
+        lat: location.lat,
+        lng: location.lng
+      })
+      await newLocation.save()
+    }
+
+    res.status(201).json(savedUser)
+  } catch (error) {
+    console.error('Error creant usuari:', error)
+    res.status(500).json({ message: 'Error al crear l’usuari' })
+  }
 }
 
-export const createUser = async (req, res) => {
-  console.log('Dades rebudes:', req.body) // <-- Comprovació
-  const user = new User(req.body)
-  const saved = await user.save()
-  res.status(201).json(saved)
-}
-
-export const updateUser = async (req, res) => {
-  const { id } = req.params
-  const updated = await User.findByIdAndUpdate(id, req.body, { new: true })
-  res.json(updated)
-}
-
-export const deleteUser = async (req, res) => {
-  const { id } = req.params
-  await User.findByIdAndDelete(id)
-  res.sendStatus(204)
-}
