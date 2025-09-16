@@ -11,13 +11,23 @@ dotenv.config()
 connectDB()
 
 const app = express()
-app.use(
-  cors({
-    origin: 'https://inprocode-frontend-rt1g.vercel.app', // ✅ CAMBIA si tu frontend tiene otro dominio
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true,
-  })
-)
+
+const allowedOrigins = [
+  'https://inprocode-frontend.vercel.app',
+  'https://inprocode-frontend-rt1g.vercel.app',
+  'http://localhost:5173',
+]
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}))
+
 app.use(express.json())
 
 app.use('/api/plugins', pluginRoutes);
