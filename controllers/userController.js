@@ -16,11 +16,11 @@ export const createUser = async (req, res) => {
   console.log('📩 Rebut:', req.body)
 
   try {
-    const { name, email, location } = req.body
+    const { name, email, location, hobby, phone } = req.body
 
     // 🔒 Validació bàsica
-    if (!name || !email || !location) {
-      return res.status(400).json({ message: 'Nom, email i ubicació són obligatoris' })
+    if (!name || !email || !location || !hobby || !phone) {
+      return res.status(400).json({ message: 'Nom, email, ubicació, hobby i telèfon són obligatoris' })
     }
 
     // 🌍 Geocodificació de la ciutat (usant Nominatim API d'OpenStreetMap)
