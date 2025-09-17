@@ -1,22 +1,30 @@
+// controllers/eventsController.js
+
 import Event from '../models/Event.js'
 
-// GET all events
 export const getEvents = async (req, res) => {
   try {
-    const events = await Event.find()
-    res.json(events)
-  } catch (err) {
-    res.status(500).json({ message: err.message })
+    const events = await Event.find().populate('userId')
+    res.status(200).json(events)
+  } catch (error) {
+    res.status(500).json({ message: 'Error obtenint esdeveniments' })
   }
 }
 
-// POST a new event
 export const createEvent = async (req, res) => {
   try {
-    const newEvent = new Event(req.body)
-    const saved = await newEvent.save()
-    res.status(201).json(saved)
-  } catch (err) {
-    res.status(400).json({ message: err.message })
+    const { id, title, start, end, backgroundColor } = req.body
+
+    if (!title || !start || !end) {
+      return res.status(400).json({ message: 'Falten camps obligatoris' })
+    }
+
+    const newEvent = new Event({ id, title, start, end, backgroundColor })
+    await newEvent.save()
+
+    res.status(201).json(newEvent)
+  } catch (error) {
+    console.error('❌ Error creant esdeveniment:', error)
+    res.status(500).json({ message: 'Error creant esdeveniment' })
   }
 }
