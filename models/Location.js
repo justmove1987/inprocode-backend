@@ -1,10 +1,11 @@
 import mongoose from 'mongoose'
 
 const locationSchema = new mongoose.Schema({
-  name: String,
-  lat: Number,
-  lng: Number,
-  category: String,
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
+  name: { type: String, required: true },
+  lat: { type: Number, required: true },
+  lng: { type: Number, required: true },
+  category: { type: String, default: 'restaurant' }
 })
 
 

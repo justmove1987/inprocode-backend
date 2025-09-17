@@ -66,8 +66,10 @@ export const createUser = async (req, res) => {
       userId: savedUser._id,
       name: `${first} ${last}`,
       lat: parseFloat(lat),
-      lng: parseFloat(lon)
+      lng: parseFloat(lon),
+      category: 'usuari' // 👈 afegit
     })
+
 
     await newLocation.save()
 
