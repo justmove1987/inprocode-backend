@@ -16,19 +16,22 @@ router.post('/', async (req, res) => {
 })
 
 // 🔴 Ruta per eliminar un esdeveniment
+// ✅ Nova versió correcta
 router.delete('/:id', async (req, res) => {
-  const id = req.params.id
-  console.log("🗑️ Intentant eliminar event amb id:", id)
+  try {
+    const deleted = await Event.findOneAndDelete({ id: req.params.id }) // ✅ Busca pel camp `id` (UUID)
 
-  const deleted = await Event.findOneAndDelete({ id })
+    if (!deleted) {
+      return res.status(404).json({ message: 'Esdeveniment no trobat' })
+    }
 
-  if (!deleted) {
-    console.warn("⚠️ No s'ha trobat cap esdeveniment amb id:", id)
-    return res.status(404).json({ message: 'Esdeveniment no trobat' })
+    res.status(200).json({ message: 'Esdeveniment esborrat correctament' })
+  } catch (err) {
+    console.error('❌ Error eliminant esdeveniment:', err)
+    res.status(500).json({ message: 'Error del servidor' })
   }
-
-  res.status(200).json({ message: 'Esdeveniment esborrat correctament' })
 })
+
 
 
 
